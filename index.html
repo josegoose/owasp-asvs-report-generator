@@ -32,6 +32,10 @@
             font-family: din, Helvetica;
         }
 
+        h2.notApplicable {
+            background-color: #cdcdcd;
+        }
+        
         h2.pass {
             background-color: #adff2f;
         }
@@ -105,6 +109,10 @@
 
 <button class="btn btn-danger" ng-class="rule.enableReset" ng-click="reset(rule)">Reset</button>
 
+<label for="statusNotApplicable">
+    <input type="radio" id="statusNotApplicable" name="status" value="notApplicable" ng-click="notApplicable(rule)"/>
+    N/A
+</label>
 <label for="statusPass">
     <input type="radio" id="statusPass" name="status" value="pass" ng-click="pass(rule)"/>
     PASS
@@ -116,6 +124,20 @@
 
 <hr/>
 
+<section class="notApplicable" ng-class="rule.showNotApplicable">
+    <p>Explain the reason why this does not apply..</p>
+    <textarea class="span8"
+              cols="80"
+              rows="5"
+              placeholder="{{rule.notApplied.justifyHelp}}"
+              ng-model="rule.notApplied.justify"></textarea>
+
+    <h3>Example:</h3>
+
+    <p class="example well">
+        {{rule.notApplied.justifyExample}}
+    </p>
+</section>
 <section class="pass" ng-class="rule.showPass">
     <p>How has this been verified (give a specific instance).</p>
     <textarea class="span8"
@@ -502,12 +524,17 @@
         <section ng-repeat="rule in report.rules | filter:belongsToChapterIndex($index+1)">
             <h2 class="{{getStatusClass(rule)}}">V{{rule.chapter}}.{{rule.nr}} - {{rule.title}}</h2>
 
-            <div ng-class="hideIfFailed(rule)">
+            <div ng-class="hideIfFailedOrPassed(rule)">
+                <p>{{rule.notApplied.description}}</p>
+
+                <p>{{rule.notApplied.justify}}</p>
+            </div>
+            <div ng-class="hideIfFailedOrNotApplied(rule)">
                 <p>{{rule.passed.description}}</p>
 
                 <p>{{rule.passed.justify}}</p>
             </div>
-            <div ng-class="hideIfPassed(rule)">
+            <div ng-class="hideIfPassedOrNotApplied(rule)">
                 <p>{{rule.failed.description}}</p>
 
                 <p>{{rule.failed.justify}}</p>

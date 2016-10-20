@@ -63,19 +63,39 @@ angular.module('asvs', []).
         $scope.showFail = 'hide';
 
         $scope.getStatusClass = function (rule) {
-            return rule.status === 'passed' ? 'pass' : 'fail';
+            if(rule.status === 'passed') return 'pass';
+            if(rule.status === 'failed') return 'fail';
+            if(rule.status === 'notApplied') return 'notApplicable';
         };
-        $scope.hideIfPassed = function (rule) {
-            return rule.status !== 'passed' ? '' : 'hide';
+        $scope.hideIfFailedOrPassed = function (rule) {
+            if(rule.status === 'failed') return 'hide';
+            if(rule.status === 'passed') return 'hide';
+            return '';
         };
-        $scope.hideIfFailed = function (rule) {
-            return rule.status !== 'passed' ? 'hide' : '';
+        $scope.hideIfPassedOrNotApplied = function (rule) {
+            if(rule.status === 'passed') return 'hide';
+            if(rule.status === 'notApplied') return 'hide';
+            return '';
+        };
+        $scope.hideIfFailedOrNotApplied = function (rule) {
+            if(rule.status === 'failed') return 'hide';
+            if(rule.status === 'notApplied') return 'hide';
+            return '';
         };
 
+        $scope.notApplicable = function (rule) {
+            rule.status = 'notApplied';
+
+            rule.enableReset = '';
+            rule.showNotApplicable = '';
+            rule.showPass = 'hide';
+            rule.showFail = 'hide';
+        };
         $scope.pass = function (rule) {
             rule.status = 'passed';
 
             rule.enableReset = '';
+            rule.showNotApplicable = 'hide';
             rule.showPass = '';
             rule.showFail = 'hide';
         };
@@ -83,6 +103,7 @@ angular.module('asvs', []).
             rule.status = 'failed';
 
             rule.enableReset = '';
+            rule.showNotApplicable = 'hide';
             rule.showPass = 'hide';
             rule.showFail = '';
         };
